@@ -32,7 +32,7 @@ This repository contains scripts and configurations to set up a self-hosted GitH
   Execute the setup script to create the repository and configure the self-hosted runner.
 
 4. **Setting Secrets (Optional):**
-  You can also set secrets for the repository. The `set_secret.sh` script will be invoked automatically by `lab_setup.sh`. You can modify the script to include specific secrets you want to add.
+  You can also set secrets for the repository. The `set_secret.sh` script will be invoked automatically by `lab_setup.sh`. You can modify the script to include specific secrets you want to add. 
 
 ## How It Works
 
